@@ -6,23 +6,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-disabled: true
 
-      - name: Build with Gradle (Directly)
-        # Is command mein hum ne wrapper ko bypass kar diya hai
+      - name: Build APK
         run: |
-          sudo apt-get install -y gradle
-          # Agar AttendBot folder ke andar hai to wahan jaye
-          if [ -d "AttendBot" ]; then cd AttendBot; fi
+          # Agar AttendBot folder ke andar project hai
+          if [ -f "AttendBot/build.gradle" ]; then cd AttendBot; fi
+          
+          # Permission aur Build
+          chmod +x gradlew || true
           gradle assembleDebug --stacktrace
 
-      - name: Find and Upload APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: AttendBot-APK
-          path: "**/app-debug.apk"
+          path: "**/build/outputs/apk/debug/*.apk"
