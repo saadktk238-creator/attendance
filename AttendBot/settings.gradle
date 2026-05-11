@@ -1,0 +1,4 @@
+rootProject.name = "AttendBot"
+includeBuild(".") {
+    // Ye line project ko flat structure mein chalne mein madad degi
+}
